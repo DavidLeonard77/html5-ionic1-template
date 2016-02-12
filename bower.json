@@ -1,0 +1,12 @@
+{
+  "name": "Html5IonicTemplate",
+  "author": "David Leonard <dleonard77@me.com>",
+  "private": "true",
+  "devDependencies": {},
+  "dependencies": {
+    "angular": "1.4.3",
+    "ngCordova": "0.1.23-alpha",
+    "angular-resource": "1.4.3",
+    "ionic": "1.2.1"
+  }
+}
