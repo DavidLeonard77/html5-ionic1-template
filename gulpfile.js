@@ -101,6 +101,14 @@ gulp.task('styles', function() {
     .on('error', errorHandler);
 });
 
+// copy data
+gulp.task('data', function() {
+  return gulp
+    .src('data/*.*')
+    .pipe(gulp.dest(path.join(targetDir, 'data')))
+    .on('error', errorHandler);
+});
+
 // bundle all the src files into scripts/bundle.js
 gulp.task('browserify', function () {
   // set up the browserify instance on a task basis
@@ -143,7 +151,13 @@ gulp.task('scripts', ['browserify'], function() {
     }));
 
   var scriptStream = gulp
-    .src( ['bundle.js', 'bundle.js.map', 'configuration.js', 'templates.js' ], { cwd: 'app/scripts' })
+    .src( [
+      'bundle.js',
+      'bundle.js.map',
+      'configuration.js',
+      'templates.js',
+      'html5sql.js'
+    ], { cwd: 'app/scripts' })
 
     .pipe(plugins.if(!build, plugins.changed(dest)));
 
@@ -315,6 +329,7 @@ gulp.task('ripple', ['scripts', 'styles', 'watchers'], function() {
 gulp.task('watchers', function() {
   plugins.livereload.listen();
   gulp.watch('app/styles/**/*.scss', ['styles']);
+  gulp.watch('app/data/**', ['data']);
   gulp.watch('app/fonts/**', ['fonts']);
   gulp.watch('app/icons/**', ['iconfont']);
   gulp.watch('app/images/**', ['images']);
@@ -339,6 +354,7 @@ gulp.task('default', function(done) {
     [
       'fonts',
       'styles',
+      'data',
       'images',
       'vendor'
     ],

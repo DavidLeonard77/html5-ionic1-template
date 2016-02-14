@@ -4,6 +4,7 @@
   "author": "David Leonard <dleonard77@me.com>",
   "description": "",
   "dependencies": {
+    "jsdoc": "^3.4.0",
     "jshint": "^2.9.1"
   },
   "devDependencies": {

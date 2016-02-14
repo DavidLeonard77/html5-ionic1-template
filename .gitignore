@@ -8,6 +8,7 @@ bower_components/
 
 .tmp/
 www/
+out/
 .sass-cache
 *.DS_Store
 *.log

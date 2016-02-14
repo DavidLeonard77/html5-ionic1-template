@@ -7,12 +7,86 @@
     <ion-content>
         <ion-refresher
             pulling-text="Pull to refresh..."
-            on-refresh="fetchRandomText()">
+            on-refresh="fetchData()">
         </ion-refresher>
         <div class="loader" ng-if="!myHTML">
             <ion-spinner></ion-spinner>
         </div>
+
+        <div class="row">
+
+          <div class="col">
+            <ion-list>
+              <ion-item class="item-input">
+                <i class="icon ion-search placeholder-icon"></i>
+                <input id="searchInput" name="searchInput" type="text" placeholder="Search" ng-model="searchInput.value" ng-change="search(searchInput.value)">
+              </ion-item>
+            </ion-list>
+          </div>
+
+        </div>
+
+        <div class="row">
+
+          <div class="col">
+            <ion-list>
+              <ion-item class="item-input item-select">
+                <div class="input-label">Unit</div>
+                <select ng-model="selectedFilters.unit"
+                        ng-change="search(searchInput.value)">
+                  <option value="" ng-checked="true">ALL</option>
+                  <option ng-value="EACH">EACH</option>
+                  <option ng-value="PACK">PACK</option>
+                  <option ng-value="SETS">SETS</option>
+                  <option ng-value="KIT">KIT</option>
+                  <option ng-value="PADS">PADS</option>
+                  <option ng-value="SETS">SETS</option>
+                  <option ng-value="BAG">BAG</option>
+                </select>
+              </ion-item>
+
+              <ion-item class="item-input item-select">
+                <div class="input-label">GPM</div>
+                <select ng-model="selectedFilters.gpm"
+                        ng-change="search(searchInput.value)">
+                  <option value="0.4" ng-checked="true">40%</option>
+                  <option ng-value="0.45">45%</option>
+                </select>
+              </ion-item>
+            </ion-list>
+          </div>
+
+          <div class="col">
+            <ion-list>
+              <ion-checkbox type="checkbox"
+                     ng-model="selectedCategories.description"
+                     ng-checked="true"
+                     ng-change="search(searchInput.value)" />
+                     Description</ion-checkbox>
+              <ion-checkbox type="checkbox"
+                     ng-model="selectedCategories.upc"
+                     ng-change="search(searchInput.value)" />
+                     UPC #</ion-checkbox>
+              <ion-checkbox type="checkbox"
+                     ng-model="selectedCategories.listprice"
+                     ng-click="search(searchInput.value)" />
+                     List Price</ion-checkbox>
+            </ion-list>
+          </div>
+
+        </div>
+
         <div class="content" ng-bind-html="myHTML">
+        </div>
+
+        <div class="content">
+          <div ng-repeat="searchResult in searchResults">
+            <span ng-if="selectedCategories.upc">{{ searchResult.upc }}</span>
+            <span ng-if="selectedCategories.description"><strong>{{ searchResult.unit }}</strong></span>
+            <span ng-if="selectedCategories.description">{{ searchResult.description }}</span>
+            <span ng-if="selectedCategories.listprice"><strong>{{ searchResult.listprice | currency : $ : '2' }}</strong></span>
+            <span>{{ searchResult.gpm * 100 }}% GPM</span>
+          </div>
         </div>
     </ion-content>
 
