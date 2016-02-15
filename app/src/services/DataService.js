@@ -32,7 +32,7 @@ module.exports = [
             _cache = cache ? '' : parseInt(Math.random()*100000000), // Give a unique name if not caching
             _shortName = shortName ? shortName+_cache : 'db'+_cache, // Assemble short name
             _longName = '',                                          // Long name
-            _maxSize = maxSize || 52400000;                          // Max size in bytes
+            _maxSize = maxSize || 5240000;                          // Max size in bytes
 
         return $q(function(resolve, reject) {
 
@@ -47,11 +47,12 @@ module.exports = [
 
               // Load SQL.data into webSQL
               var startTime = new Date();
-              SQLprocessor.process(
-                sql.data,
+              SQLprocessor.process( sql.data,
+
                 function(){
                   resolve('Database ' + _shortName + ' created in ' + ((new Date() - startTime) / 1000) + ' seconds');
                 },
+
                 function(error, failingQuery, sequenceNumber){
                   reject('Error: ' + error.message + ' at sequence ' + sequenceNumber);
                 }
@@ -71,48 +72,62 @@ module.exports = [
 
       /** Search the database
       * @constructor
-      * @param {column} table column to search
-      * @param {string} search string
+      * @param {columns} (obj) table columns to search
+      * @param {string} (string) to search
+      * @param {filters} (obj) table columns to filter
       * @return {promise} (resolve([results]), reject(error))
       */
-      function processSearch (columns, string, filters) {
+      function processSearch (categories, string, filters) {
 
         var parts = string && string.length ? string.split(' ') : null,
             query = '';
 
         return $q( function(resolve, reject){
 
-          // Something to search
-          if (columns && string) {
+          // Prepare the query to search all selected categories
+          // Categories are selected by input checkboxes or radio buttons
+          var categoryCount = 0;
+          angular.forEach(categories, function(value, column) {
 
-            // Prepare the query with selected categories
-            var c = 0;
-            angular.forEach(columns, function(value, column){
-              if (value) {
-                query = c > 0 ? query + ' OR ' : query;
-                angular.forEach(parts, function(item, i){
-                  if (item.length) {
-                    query = i > 0 ? query +' AND ' : query;
-                    query = query + column +' LIKE "%' + item + '%"';
-                  }
-                });
-                c++;
+            // If category selected and search input has a value
+            if (value && parts) {
+
+              query = categoryCount > 0 ? query + ' OR ' : query;
+              var partsQuery = '';
+              angular.forEach(parts, function(item, index){
+                if (item.length) {
+                  partsQuery = index > 0 ? partsQuery + ' AND ' : partsQuery;
+                  partsQuery += column +' LIKE "%' + item + '%"';
+                }
+              });
+              query += '(' + partsQuery + ')';
+              categoryCount++;
+
+            }
+
+          });
+
+          // Prepare the query with selected filters
+          // Filter values are provided by <select> input elements
+          var filterCount = 0;
+          if (filters) {
+
+            angular.forEach(filters, function(value, filter) {
+              if (value.length) {
+                query = !filterCount && query ? '(' + query + ') AND ' : query;
+                query = filterCount > 0 ? query + ' AND ' : query;
+                query += '(' + filter +' = "' + value + '")';
+                filterCount++;
               }
             });
 
-            // Prepare the query with selected filters
-            if (filters) {
-              query = '(' + query + ')';
-              angular.forEach(filters, function(value, filter){
-                if (value.length) {
-                  query = query + ' AND (' + filter +' = "' + value + '")';
-                }
-              });
-            }
+          }
+
+          if (categoryCount || filterCount) {
 
             // Final query
             query = 'SELECT * FROM products WHERE ' + query + ' LIMIT 50';
-            // console.log(query);
+            console.log(query);
 
             // Process the query
             SQLprocessor.process(query,
@@ -124,11 +139,10 @@ module.exports = [
 
               // Error in sql statement
               function(error, statement){
-                reject('Error: ' + error.message + ' when processing ' + statement);
+                reject(error.message + ' when processing ' + statement);
               }
             );
 
-          // return no search results
           } else {
             resolve([]);
           }
@@ -158,7 +172,7 @@ module.exports = [
             // fire away
             if (asyncsearch) {
               processSearch(columns, string, filters).then(function(result){
-                resolve(resut);
+                resolve(result);
               });
 
             // Send SQL queries syncronously
@@ -166,60 +180,58 @@ module.exports = [
 
               // Save search for later if sql still processing
               if (processingSQL) {
+
                 queuedSearch = [{
                   'columns' : columns,
                   'item' : string,
                   'filters' : filters || null
                 }];
+
                 reject('Still processing');
 
               // Process free
               } else {
 
-                // Nothing to search - kill the cue
-                if (!string) {
-                  queuedSearch = [];
-                  resolve([]);
+                processingSQL = true;
+                var startTime = new Date();
+                processSearch(columns, string, filters)
 
-                } else {
-                  processingSQL = true;
+                .then(function(result){
+                  console.log('Results returned in ' + ((new Date() - startTime) / 1000) + ' seconds');
 
-                  var startTime = new Date();
-                  processSearch(columns, string, filters)
-                    .then(function(result){
+                  processingSQL = false;
 
-                      // console.log('Results returned in ' + ((new Date() - startTime) / 1000) + ' seconds');
+                  // Search request in queue
+                  if (queuedSearch.length) {
 
-                      processingSQL = false;
-                      if (queuedSearch.length) {
+                    processSearch(
+                      queuedSearch[0].columns,
+                      queuedSearch[0].string,
+                      queuedSearch[0].filters
+                    )
 
-                        processSearch(
-                          queuedSearch[0].columns,
-                          queuedSearch[0].string,
-                          queuedSearch[0].filters
-                        )
-                          .then(function(cuedResult){
-                            resolve(cuedResult);
-                          },function(error){
-                            reject(error);
-                          });
-                        queuedSearch = [];
+                    .then(function(cuedResult){
+                      resolve(cuedResult);
 
-                      // Return the result
-                      } else {
-                        resolve(result);
-                      }
-
+                    },function(error){
+                      reject(error);
                     });
 
-                }
+                    queuedSearch = [];
+
+                  // Return the result
+                  } else {
+                    resolve(result);
+                  }
+
+                });
 
               }
 
             }
 
           } else {
-            reject('No columns provided');
+            resolve([]);
           }
         });
 

@@ -36,21 +36,23 @@ module.exports = [
       $scope.fetchData();
 
       // table columns using SQL OR (template checkbox or radio button elements)
-      $scope.selectedCategories = { description: true };
+      $scope.searchCategories = { description: true };
 
       // table columns using SQL AND (template select element)
-      $scope.selectedFilters = { unit: '', gpm: '0.4' };
+      $scope.searchFilters = { unit: '', gpm: '' };
 
       // Search
+      $scope.searchInput = { value: '' };
       $scope.searchResults = [];
-      $scope.search = function (searchString){
+      $scope.search = function (){
 
-        var searchColumns = $scope.selectedCategories,
-            searchFilters = $scope.selectedFilters;
+        var searchColumns = $scope.searchCategories,
+            searchFilters = $scope.searchFilters,
+            _searchString = $scope.searchInput.value;
 
         DataService.searchData(
           searchColumns,  // (obj)    required - { columnName : true/false, .. }
-          searchString,   // (string) required - Search string
+          _searchString,  // (string) required - Search string
           searchFilters,  // (obj)    optional - { filterName : 'value', .. }
           false           // (bool)   optional - asyncronous queries
         )
