@@ -17,17 +17,21 @@ module.exports = [
       DataService
     ) {
 
-      // Create a database from sql file
       $scope.myHTML = '';
+
+
+
+      // Create a database from sql file
       $scope.fetchData = function() {
 
+        var startTime = new Date();
         DataService.fetchData('db.sql')
 
-          .then( function(response){
-            $scope.myHTML = response;
+          .then(function(response){
+            $scope.myHTML = 'Database ' + response + ' created in ' + ((new Date() - startTime) / 1000) + ' seconds';
             $scope.$broadcast('scroll.refreshComplete');
 
-          }, function(error){
+          },function(error){
             console.log(error);
             $scope.$broadcast('scroll.refreshComplete');
           });
@@ -35,30 +39,45 @@ module.exports = [
       };
       $scope.fetchData();
 
-      // table columns using SQL OR (template checkbox or radio button elements)
-      $scope.searchCategories = { description: true };
 
-      // table columns using SQL AND (template select element)
-      $scope.searchFilters = { unit: '', gpm: '' };
 
       // Search
       $scope.searchInput = { value: '' };
+      $scope.searchCategories = { description: true };
+      $scope.searchFilters = { unit: '', gpm: '' };
       $scope.searchResults = [];
       $scope.search = function (){
 
-        var searchColumns = $scope.searchCategories,
-            searchFilters = $scope.searchFilters,
-            _searchString = $scope.searchInput.value;
+        // Because we are searching for the same value across all checked inputs
+        // we assign the same string to each if selected
+        var searchCategories = {};
+        angular.forEach($scope.searchCategories, function(value, category){
+          if (value) {
+            searchCategories[category] = $scope.searchInput.value;
+          }
+        });
 
+        // Build a SQL query
+        var query = DataService.getQuery(
+          $scope.searchInput.value,  // (string) required - Search string
+          searchCategories,          // (obj)    required - Search accross list
+          $scope.searchFilters       // (obj)    optional - Filter accross list
+        );                           // console.log(query);
+
+
+
+        // Search a table
+        var startTime = new Date();
         DataService.searchData(
-          searchColumns,  // (obj)    required - { columnName : true/false, .. }
-          _searchString,  // (string) required - Search string
-          searchFilters,  // (obj)    optional - { filterName : 'value', .. }
-          false           // (bool)   optional - asyncronous queries
+          'products',                // (string) rewuired - Database table
+          query,                     // (string) required - SQL query
+          50,                        // (int)    optional - Results limit
+          false                      // (bool)   optional - Asyncronous queries
         )
 
-          .then(function(result){
-            $scope.searchResults = result;
+          .then(function(results){
+            $scope.myHTML = 'Results found in ' + ((new Date() - startTime) / 1000) + ' seconds';
+            $scope.searchResults = results;
 
           },function(error){
             console.log(error);

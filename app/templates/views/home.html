@@ -26,9 +26,12 @@
 
         </div>
 
+        <div class="content" ng-bind-html="myHTML">
+        </div>
+
         <div class="row">
 
-          <div class="col">
+          <div class="col" style="width: 20%">
             <ion-list>
               <ion-item class="item-input item-select">
                 <div class="input-label">Unit</div>
@@ -50,15 +53,11 @@
                 <select ng-model="searchFilters.gpm"
                         ng-change="search(searchInput.value)">
                   <option value="" ng-checked="true">ANY</option>
-                  <option ng-value="0.4">40%</option>
-                  <option ng-value="0.45">45%</option>
+                  <option ng-value="40">40%</option>
+                  <option ng-value="45">45%</option>
                 </select>
               </ion-item>
-            </ion-list>
-          </div>
 
-          <div class="col">
-            <ion-list>
               <ion-checkbox type="checkbox"
                             ng-model="searchCategories.description"
                             ng-checked="true"
@@ -75,20 +74,24 @@
             </ion-list>
           </div>
 
-        </div>
+          <div class="col" style="width: 80%">
+              <ion-list>
+                  <div ng-repeat="searchResult in searchResults">
+                    <ion-item>
 
-        <div class="content" ng-bind-html="myHTML">
-        </div>
+                    <span ng-class="{'selected' : searchCategories.upc}">{{ searchResult.upc }}</span>
+                    <span ng-class="{'selected' : searchFilters.unit}"><strong>{{ searchResult.unit }}</strong></span>
+                    <span ng-class="{'selected' : searchCategories.description}">{{ searchResult.description }}</span>
+                    <span ng-class="{'selected' : searchCategories.listprice}"><strong>{{ searchResult.listprice | currency : $ : '2' }}</strong></span>
+                    <span ng-class="{'selected' : searchFilters.gpm}">{{ searchResult.gpm }}% GPM</span>
 
-        <div class="content">
-          <div ng-repeat="searchResult in searchResults">
-            <span ng-class="{'selected' : searchCategories.upc}">{{ searchResult.upc }}</span>
-            <span ng-class="{'selected' : searchFilters.unit}"><strong>{{ searchResult.unit }}</strong></span>
-            <span ng-class="{'selected' : searchCategories.description}">{{ searchResult.description }}</span>
-            <span ng-class="{'selected' : searchCategories.listprice}"><strong>{{ searchResult.listprice | currency : $ : '2' }}</strong></span>
-            <span ng-class="{'selected' : searchFilters.gpm}">{{ searchResult.gpm * 100 }}% GPM</span>
+                    </ion-item>
+                  </div>
+            </ion-list>
           </div>
+
         </div>
+
     </ion-content>
 
 </ion-view>

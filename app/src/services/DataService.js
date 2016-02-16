@@ -21,18 +21,19 @@ module.exports = [
 
       /** Fetch an SQL file and create a webSQL database
       * @constructor
-      * @param  {fileName} name of sql file
+      * @param  {fileName}  name of sql file
       * @param  {shortName} name for db
-      * @param  {cache} removes random hash in database shortname (default: false)
-      * @return {promise} (resolve, reject)
+      * @param  {cache}     removes random hash in database shortname (default: false)
+      * @param  {maxsize}   in butes
+      * @return {promise}   (resolve(shortName), reject(error))
       */
       function fetchData (fileName, shortName, cache, maxSize) {
 
-        var _filePath = fileName ? 'data/'+fileName : null,          // Prefix path if we have one
-            _cache = cache ? '' : parseInt(Math.random()*100000000), // Give a unique name if not caching
-            _shortName = shortName ? shortName+_cache : 'db'+_cache, // Assemble short name
-            _longName = '',                                          // Long name
-            _maxSize = maxSize || 5240000;                          // Max size in bytes
+        var _filePath = fileName ? 'data/' + fileName : null,          // Prefix path if we have one
+            _cache = cache ? '' : parseInt(Math.random()*100000000),   // Give a unique name if not caching
+            _shortName = shortName ? shortName+_cache : 'db' + _cache, // Assemble short name
+            _longName = '',                                            // Long name
+            _maxSize = maxSize || 5240000;                             // Max size in bytes
 
         return $q(function(resolve, reject) {
 
@@ -46,11 +47,10 @@ module.exports = [
             }).then(function(sql){
 
               // Load SQL.data into webSQL
-              var startTime = new Date();
               SQLprocessor.process( sql.data,
 
                 function(){
-                  resolve('Database ' + _shortName + ' created in ' + ((new Date() - startTime) / 1000) + ' seconds');
+                  resolve(_shortName);
                 },
 
                 function(error, failingQuery, sequenceNumber){
@@ -69,68 +69,93 @@ module.exports = [
 
       }
 
+      /** Get array of string parts
+      * @constructor
+      * @param  {string}      (string) to search
+      * @return {parts}       (array)  Array of string parts
+      */
+      function getSearchStringParts (string) {
+        return string && string.length ? string.split(' ') : null;
+      }
+
+      /** Build SQL query for searching a category
+      * @constructor
+      * @param  {string}      (string) to search
+      * @param  {category}    (string) table column to search
+      * @return {query}       (string)
+      */
+      function stringQuery (string, category) {
+        var parts = getSearchStringParts(string),
+            query = '';
+
+        angular.forEach(parts, function(item, index){
+          if (item.length) {
+            query = index > 0 ? query + ' AND ' : query;
+            query += category +' LIKE "%' + item + '%"';
+          }
+        });
+        query = query ? '(' + query + ')' : query;
+
+        return query;
+      }
+
+      /** Build SQL query for searching a list of categories
+      * @constructor
+      * @param  {searchItems} (obj)    List of columns and values to search
+      * @param  {operator}    (string) SQL operator to use (eg ' AND ')
+      * @return {query}       (string)
+      */
+      function columnQuery (searchItems, operator) {
+        var match = operator || ' OR ',
+            query = '';
+
+        angular.forEach(searchItems, function(string, column) {
+          if (string) {
+            query = query ? query + match : query;
+            query += stringQuery(string, column);
+          }
+        });
+        query = query ? '(' + query + ')' : query;
+
+        return query;
+      }
+
+      /** Build a full query
+      * @constructor
+      * @param  {string}      (string)  to search
+      * @param  {categories}  (obj)     table columns to search (SQL OR)
+      * @param  {filters}     (obj)     table columns to filter (SQL AND)
+      * @return {promise}     (resolve([results]), reject(error))
+      */
+      function getQuery (string, categories, filters) {
+
+        var categoryQuery = columnQuery(categories, ' OR '),
+            filterQuery = columnQuery(filters, ' AND '),
+
+            query = categoryQuery +
+                    (categoryQuery && filterQuery ? ' AND ' : '') +
+                    filterQuery;
+
+        return query;
+      }
 
       /** Search the database
       * @constructor
-      * @param {columns} (obj) table columns to search
-      * @param {string} (string) to search
-      * @param {filters} (obj) table columns to filter
-      * @return {promise} (resolve([results]), reject(error))
+      * @param  {table}       (string)  table name to search
+      * @param  {query}       (string)  SQL query
+      * @param  {limit}       (integer) return results limit (default 50)
+      * @return {promise}     (resolve([results]), reject(error))
       */
-      function processSearch (categories, string, filters) {
-
-        var parts = string && string.length ? string.split(' ') : null,
-            query = '';
+      function processSearch (table, query, limit) {
+        var _limit = parseInt(limit) || 50;
 
         return $q( function(resolve, reject){
 
-          // Prepare the query to search all selected categories
-          // Categories are selected by input checkboxes or radio buttons
-          var categoryCount = 0;
-          angular.forEach(categories, function(value, column) {
-
-            // If category selected and search input has a value
-            if (value && parts) {
-
-              query = categoryCount > 0 ? query + ' OR ' : query;
-              var partsQuery = '';
-              angular.forEach(parts, function(item, index){
-                if (item.length) {
-                  partsQuery = index > 0 ? partsQuery + ' AND ' : partsQuery;
-                  partsQuery += column +' LIKE "%' + item + '%"';
-                }
-              });
-              query += '(' + partsQuery + ')';
-              categoryCount++;
-
-            }
-
-          });
-
-          // Prepare the query with selected filters
-          // Filter values are provided by <select> input elements
-          var filterCount = 0;
-          if (filters) {
-
-            angular.forEach(filters, function(value, filter) {
-              if (value.length) {
-                query = !filterCount && query ? '(' + query + ') AND ' : query;
-                query = filterCount > 0 ? query + ' AND ' : query;
-                query += '(' + filter +' = "' + value + '")';
-                filterCount++;
-              }
-            });
-
-          }
-
-          if (categoryCount || filterCount) {
-
-            // Final query
-            query = 'SELECT * FROM products WHERE ' + query + ' LIMIT 50';
-            console.log(query);
+          if (table && query) {
 
             // Process the query
-            SQLprocessor.process(query,
+            SQLprocessor.process(
+              'SELECT * FROM ' + table + ' WHERE ' + query + ' LIMIT ' + _limit,
 
               // Return found columns
               function(tx, results, arr){
@@ -151,29 +176,31 @@ module.exports = [
 
       }
 
-
-
-      /** Cues the search requests for 'live search'
+      /** Queues the search requests for 'live search'
       * @constructor
-      * @param {columns} (obj) table columns to search
-      * @param {string} (string) to search
-      * @param {filters} (obj) table columns to filter
-      * @param {asyncsearch} (bool) asyncronous SQL processing (default: false)
-      * @return {promise} (resolve([results]), reject(error))
+      * @param  {table}       (string)  table name to search
+      * @param  {query}       (string)  SQL query
+      * @param  {limit}       (integer) return results limit (default 50)
+      * @param  {asyncsearch} (bool)    asyncronous SQL processing (default false)
+      * @return {promise}     (resolve([results]), reject(error))
       */
       var processingSQL = false;
-      var queuedSearch = [];
-      function searchData (columns, string, filters, asyncsearch) {
+      var queuedQuery = [];
+      function searchData (table, query, limit, asyncsearch) {
 
         return $q(function(resolve, reject){
 
-          if (columns) {
+          if (query) {
 
             // fire away
             if (asyncsearch) {
-              processSearch(columns, string, filters).then(function(result){
-                resolve(result);
-              });
+              processSearch(table, query, limit)
+
+                .then(function(result){
+                  resolve(result);
+                },function(error){
+                  reject(error);
+                });
 
             // Send SQL queries syncronously
             } else {
@@ -181,50 +208,41 @@ module.exports = [
               // Save search for later if sql still processing
               if (processingSQL) {
 
-                queuedSearch = [{
-                  'columns' : columns,
-                  'item' : string,
-                  'filters' : filters || null
-                }];
-
+                queuedQuery = [query];
                 reject('Still processing');
 
               // Process free
               } else {
 
                 processingSQL = true;
-                var startTime = new Date();
-                processSearch(columns, string, filters)
+                processSearch(table, query, limit)
 
-                .then(function(result){
-                  console.log('Results returned in ' + ((new Date() - startTime) / 1000) + ' seconds');
+                  .then(function(result){
 
-                  processingSQL = false;
+                    processingSQL = false;
 
-                  // Search request in queue
-                  if (queuedSearch.length) {
+                    // Search request in queue
+                    if (queuedQuery.length) {
 
-                    processSearch(
-                      queuedSearch[0].columns,
-                      queuedSearch[0].string,
-                      queuedSearch[0].filters
-                    )
+                      processSearch(table, queuedQuery[0], limit)
 
-                    .then(function(cuedResult){
-                      resolve(cuedResult);
+                        .then(function(cuedResult){
+                          resolve(cuedResult);
 
-                    },function(error){
-                      reject(error);
-                    });
+                        },function(error){
+                          reject(error);
+                        });
 
-                    queuedSearch = [];
+                      queuedQuery = [];
 
-                  // Return the result
-                  } else {
-                    resolve(result);
-                  }
+                    // Return the result
+                    } else {
+                      resolve(result);
+                    }
 
-                });
+                  },function(error){
+                    reject(error);
+                  });
 
               }
 
@@ -241,6 +259,7 @@ module.exports = [
       // public api
       return {
         fetchData: fetchData,
+        getQuery: getQuery,
         searchData: searchData
       };
     }
