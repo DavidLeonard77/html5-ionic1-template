@@ -58,13 +58,13 @@ module.exports = [
         });
 
         // Build a SQL query
-        var query = DataService.getQuery(
-          $scope.searchInput.value,  // (string) required - Search string
-          searchCategories,          // (obj)    required - Search accross list
-          $scope.searchFilters       // (obj)    optional - Filter accross list
-        );                           // console.log(query);
+        var categoryQuery = DataService.getQuery(searchCategories, 'OR'),
+            filterQuery = DataService.getQuery($scope.searchFilters, 'AND'),
+            query = categoryQuery +
+                    (categoryQuery && filterQuery ? 'AND' : '') +
+                    filterQuery;
 
-
+        console.log(query);
 
         // Search a table
         var startTime = new Date();

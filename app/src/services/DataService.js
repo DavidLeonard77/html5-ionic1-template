@@ -105,8 +105,8 @@ module.exports = [
       * @param  {operator}    (string) SQL operator to use (eg ' AND ')
       * @return {query}       (string)
       */
-      function columnQuery (searchItems, operator) {
-        var match = operator || ' OR ',
+      function getQuery (searchItems, operator) {
+        var match = operator || 'OR',
             query = '';
 
         angular.forEach(searchItems, function(string, column) {
@@ -116,25 +116,6 @@ module.exports = [
           }
         });
         query = query ? '(' + query + ')' : query;
-
-        return query;
-      }
-
-      /** Build a full query
-      * @constructor
-      * @param  {string}      (string)  to search
-      * @param  {categories}  (obj)     table columns to search (SQL OR)
-      * @param  {filters}     (obj)     table columns to filter (SQL AND)
-      * @return {promise}     (resolve([results]), reject(error))
-      */
-      function getQuery (string, categories, filters) {
-
-        var categoryQuery = columnQuery(categories, ' OR '),
-            filterQuery = columnQuery(filters, ' AND '),
-
-            query = categoryQuery +
-                    (categoryQuery && filterQuery ? ' AND ' : '') +
-                    filterQuery;
 
         return query;
       }
