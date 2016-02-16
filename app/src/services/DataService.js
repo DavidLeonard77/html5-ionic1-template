@@ -21,11 +21,11 @@ module.exports = [
 
       /** Fetch an SQL file and create a webSQL database
       * @constructor
-      * @param  {fileName}  name of sql file
-      * @param  {shortName} name for db
-      * @param  {cache}     removes random hash in database shortname (default: false)
-      * @param  {maxsize}   in butes
-      * @return {promise}   (resolve(shortName), reject(error))
+      * @param  {fileName}   (string)  name of sql file
+      * @param  {shortName}  (string)  name for db
+      * @param  {cache}      (bool)    removes random hash in database shortname (default: false)
+      * @param  {maxsize}    (integer) in butes
+      * @return {promise}    (resolve(shortName), reject(error))
       */
       function fetchData (fileName, shortName, cache, maxSize) {
 
