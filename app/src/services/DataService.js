@@ -90,8 +90,8 @@ module.exports = [
 
         angular.forEach(parts, function(item, index){
           if (item.length) {
-            query = index > 0 ? query + ' AND ' : query;
-            query += category +' LIKE "%' + item + '%"';
+            query = index > 0 ? query + 'AND' : query;
+            query += '(' + category +' LIKE "%' + item + '%")';
           }
         });
         query = query ? '(' + query + ')' : query;
