@@ -19,7 +19,14 @@
             <ion-list>
               <ion-item class="item-input">
                 <i class="icon ion-search placeholder-icon"></i>
-                <input id="searchInput" name="searchInput" type="text" placeholder="Search" ng-model="searchInput.value" ng-change="search()">
+                <input id="searchInput"
+                       name="searchInput"
+                       type="text"
+                       placeholder="Search"
+                       ng-model="searchInput.value"
+                       ng-change="search()"
+                       autocapitalize="off"
+                       autocorrect="off">
               </ion-item>
             </ion-list>
           </div>
