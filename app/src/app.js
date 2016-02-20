@@ -90,4 +90,6 @@ angular.module( 'Html5IonicTemplate', [
 .factory( 'ApiService',            require( './services/ApiService'     ) )
 .factory( 'DataService',           require( './services/DataService'    ) )
 .factory( 'SQLprocessor',              require( './services/html5sql'    ) )
+.factory( 'UsersService',              require( './services/UsersService'    ) )
+
 ;
