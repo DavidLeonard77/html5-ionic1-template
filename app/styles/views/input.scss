@@ -1,0 +1,21 @@
+.see-output {
+  position: absolute;
+  right: 40px;
+  line-height: 35px;
+}
+
+.input-content {
+  .item-form {
+    .item {
+      padding-left: 60px;
+    }
+  }
+  button {
+    width: 100%;
+    min-height: 40px;
+    background: white !important;
+    font: {
+      size: mapGet($basefont, size, standard);
+    }
+  }
+}

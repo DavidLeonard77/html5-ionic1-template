@@ -1,0 +1,32 @@
+ion-side-menu {
+  ion-header-bar {
+    background-color: #777 !important;
+    border-color: #767676 !important;
+    &.active {
+      background-color: #444 !important;
+      border-color: #545454 !important;
+    }
+    a {
+      margin: 0 25px !important;
+      &.title {
+        font: {
+          family: mapGet($basefont, family, regular) !important;
+          size: mapGet($basefont, size, standard) !important;
+        }
+        text-decoration: none;
+      }
+    }
+  }
+  ion-content {
+    background-color: #f0f0f0;
+    .list {
+      .item {
+        padding-left: 25px;
+        background-color: transparent;
+        &.active {
+          background-color: #e0e0e0;
+        }
+      }
+    }
+  }
+}

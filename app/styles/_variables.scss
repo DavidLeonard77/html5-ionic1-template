@@ -4,3 +4,126 @@
 
 $textColor: #ccc;
 $primaryColor: #387ef5;
+
+// http://ionicframework.com/docs/v2/theming/
+
+// Functions
+// --------------------------------------------------
+@function mapGet($map, $list...) {
+    @each $key in $list {
+        $map: map-get($map, $key);
+    }
+    @return $map; // Our value
+}
+
+
+// Mixins
+// --------------------------------------------------
+@mixin transition($args...) {
+  -webkit-transition: $args;
+  -moz-transition: $args;
+  -ms-transition: $args;
+  -o-transition: $args;
+  transition: $args;
+}
+
+// App Shared Variables
+// --------------------------------------------------
+// To customize the look and feel of this app, you can override
+// the Sass variables found in Ionic's source scss files. Setting
+// variables before Ionic's Sass will use these variables rather than
+// Ionic's default Sass variable values. App Shared Sass imports belong
+// in the app.core.scss file and not this file. Sass variables specific
+// to the mode belong in either the app.ios.scss or app.md.scss files.
+
+
+// App Shared Color Variables
+// --------------------------------------------------
+// It's highly recommended to change the default colors
+// to match your app's branding. Ionic uses a Sass map of
+// colors so you can add, rename and remove colors as needed.
+// The "primary" color is the only required color in the map.
+// Both iOS and MD colors can be further customized if colors
+// are different per mode.
+
+$basecolor: (
+  primary:    #387ef5,
+  secondary:  #32db64,
+  danger:     #f53d3d,
+  light:      #f4f4f4,
+  dark:       #222,
+  average:    #888,
+  favorite:   #69BB7B
+);
+
+// Fonts
+// --------------------------------------------------
+// Import fonts either via @import url (e.g. from Googlee Fonts)
+// or via @font-face when font files are stored locally in /app/fonts
+//
+
+// @import url(http://fonts.googleapis.com/css?family=Roboto:700,400,300);
+
+@font-face {
+    font-family: 'RobotoLight';
+    src: url(../fonts/roboto-Light.ttf) format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RobotoThin';
+    src: url(../fonts/roboto-Thin.ttf) format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'RobotoBold';
+    src: url(../fonts/roboto-Bold.ttf) format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+$basefont: (
+  color: (
+    standard: #444,
+    dark:     #222,
+    light:    #888,
+    positive: #387ef5
+  ),
+  size: (
+    large: 24px,
+    standard: 14px,
+    small: 11px,
+    tiny: 9px
+  ),
+  family: (
+    light:   RobotoThin,
+    regular: RobotoLight,
+    strong:  RobotoBold
+  )
+);
+
+
+
+$font-family-sans-serif: "Helvetica Neue", "Roboto", sans-serif;
+$font-family-light-sans-serif: "HelveticaNeue-Light", "Roboto-Light", sans-serif-light;
+$font-family-serif: serif;
+$font-family-monospace: monospace;
+$font-family-base: $font-family-sans-serif;
+$font-size-base: 14px;
+$font-size-large: 18px;
+$font-size-small: 11px;
+
+$content-background: #f8f8f8;
+$textColor: #ccc;
+$border-color: #ddd;
+$grey-light: #eee;
+$grey: #999;
+$grey-medium: #666;
+$grey-dark: #444;
+$redish: #cc2511;
+$aqua: #387ef5;
+$aqua-border: #0c63ee;
+$font-size-standard: 14px;

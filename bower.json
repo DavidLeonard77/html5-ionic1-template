@@ -8,6 +8,8 @@
     "ngCordova": "0.1.23-alpha",
     "angular-resource": "1.4.3",
     "ionic": "1.2.1",
-    "defiant.js": "defiantjs#~1.3.4"
+    "defiant.js": "defiantjs#~1.3.4",
+    "macs.js": "git@github.com:CompareNetworks/html5-macsjs.git#dev",
+    "angular-input-masks": "^2.1.1"
   }
 }

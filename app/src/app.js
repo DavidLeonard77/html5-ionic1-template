@@ -17,7 +17,8 @@
 angular.module( 'Html5IonicTemplate', [
   'ionic',
   'ngCordova',
-  'ngResource'
+  'ngResource',
+  'ui.utils.masks'
 ] )
 .run( [
   '$ionicPlatform',
@@ -53,7 +54,7 @@ angular.module( 'Html5IonicTemplate', [
       })
       .state('app.home', {
         url: '/home',
-        cache: true,
+        cache: false,
         views: {
           'viewContent': {
             templateUrl: 'templates/views/home.html',
@@ -61,6 +62,38 @@ angular.module( 'Html5IonicTemplate', [
           }
         }
       })
+      .state('app.input', {
+        url: '/input' +
+             '?account' +
+             '?business',
+        cache: false,
+        views: {
+          'viewContent': {
+            templateUrl: 'templates/views/input.html',
+            controller: 'InputController'
+          }
+        }
+      })
+      .state('app.accounts', {
+        url: '/accounts',
+        cache: false,
+        views: {
+          'viewContent': {
+            templateUrl: 'templates/views/accounts.html',
+            controller: 'AccountsController'
+          }
+        }
+      })
+      // .state('app.dashboard', {
+      //   url: '/dashboard',
+      //   cache: true,
+      //   views: {
+      //     'viewContent': {
+      //       templateUrl: 'templates/views/dashboard.html',
+      //       controller: 'DashboardController'
+      //     }
+      //   }
+      // })
       .state('app.settings', {
         url: '/settings',
         cache: true,
@@ -80,16 +113,20 @@ angular.module( 'Html5IonicTemplate', [
 
 // Angular module controllers
 //
-.controller( 'MainController',     require( './controllers/mainController'     ) )
-.controller( 'HomeController',     require( './controllers/homeController'     ) )
-.controller( 'SettingsController', require( './controllers/settingsController' ) )
+.controller( 'MainController',      require( './controllers/mainController'      ) )
+.controller( 'HomeController',      require( './controllers/homeController'      ) )
+.controller( 'InputController',     require( './controllers/inputController'     ) )
+.controller( 'AccountsController',  require( './controllers/accountsController'  ) )
+.controller( 'DashboardController', require( './controllers/dashboardController' ) )
+.controller( 'SettingsController',  require( './controllers/settingsController'  ) )
 
 // Angular module services
 //
-// .factory( 'ExampleService',        require( './services/ExampleService' ) )
-.factory( 'ApiService',            require( './services/ApiService'     ) )
-.factory( 'DataService',           require( './services/DataService'    ) )
-.factory( 'SQLprocessor',              require( './services/html5sql'    ) )
-.factory( 'UsersService',              require( './services/UsersService'    ) )
+// .factory( 'ExampleService',      require( './services/ExampleService'         ) )
+.factory( 'ApiService',             require( './services/ApiService'             ) )
+.factory( 'DataService',            require( './services/DataService'            ) )
+.factory( 'SQLprocessor',           require( './services/html5sql'               ) )
+.factory( 'UserService',            require( './services/UserService'            ) )
+.factory( 'AccountService',         require( './services/AccountService'         ) )
 
 ;

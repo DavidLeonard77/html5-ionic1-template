@@ -1,30 +1,39 @@
-<ion-side-menus>
-    <!-- Center content -->
-    <ion-side-menu-content>
+<ion-side-menus enable-menu-with-back-views="true">
+  <!-- Center content -->
+  <ion-side-menu-content>
+    <ion-nav-view name="viewContent"></ion-nav-view>
+  </ion-side-menu-content>
 
-        <ion-nav-view name="viewContent">
+  <!-- Left menu -->
+  <ion-side-menu side="left" class="side-menu">
 
-        </ion-nav-view>
-    </ion-side-menu-content>
+    <ion-header-bar align-title="left" class="bar-dark" ui-sref-active="active">
+      <a menu-close class="title" ui-sref="app.home">
+        Home
+      </a>
+    </ion-header-bar>
 
-    <!-- Left menu -->
-    <ion-side-menu side="left" class="side-menu">
-
-        <ion-header-bar align-title="center" class="bar-positive">
-            <h1 class="title">Side Menu</h1>
-        </ion-header-bar>
-
-        <ion-content class="has-header">
-            <div class="list">
-                <a menu-close class="item item-icon-left" ui-sref-active="active" ui-sref="app.home">
-                    <i class="icon ion-home"></i>
-                    Home
-                </a>
-                <a menu-close class="item item-icon-left" ui-sref-active="active" ui-sref="app.settings">
-                    <i class="icon ion-settings"></i>
-                    Settings
-                </a>
-            </div>
-        </ion-content>
-    </ion-side-menu>
+    <ion-content class="has-header">
+      <div class="list">
+        <a menu-close class="item item-icon-left" ui-sref-active="active" ui-sref="app.dashboard">
+          Dashboard
+        </a>
+        <a menu-close class="item item-icon-left" ui-sref-active="active" ui-sref="app.accounts">
+          Accounts
+        </a>
+        <a menu-close class="item item-icon-left" ui-sref-active="active" ui-sref="app.output">
+          Output
+        </a>
+        <a menu-close class="item item-icon-left" ui-sref-active="active" ui-sref="app.information">
+          Information
+        </a>
+        <a menu-close class="item item-icon-left" ui-sref-active="active" ui-sref="app.realateddocs">
+          Related Documents
+        </a>
+        <a menu-close class="item item-icon-left" ui-sref-active="active" ui-sref="app.settings">
+          Settings
+        </a>
+      </div>
+    </ion-content>
+  </ion-side-menu>
 </ion-side-menus>

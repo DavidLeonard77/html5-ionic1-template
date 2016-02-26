@@ -1,5 +1,492 @@
+// Base styles -----------------------------------------------------------------
 .loader {
   text-align: center;
   width: 100%;
   padding: 20px 0;
+}
+
+.item,
+body {
+  font: {
+    size:   mapGet($basefont, size, standard);
+    family: mapGet($basefont, family, regular);
+  }
+  color: mapGet($basefont, color, standard);
+}
+h1, h2, h3, h4, h5, h6,
+input, select, option, span, label {
+  font: {
+    family: mapGet($basefont, family, regular);
+  }
+}
+ion-content {
+  background: $content-background;
+}
+ion-header-bar {
+  &.branding {
+    background: {
+      image: url("../images/header-bg.jpg") !important;
+      position: center;
+      size: cover !important;
+      color: transparent !important;
+    }
+  }
+}
+
+
+
+// Main content styling --------------------------------------------------------
+.content {
+  padding: 40px;
+
+  // Main header
+  .group-header {
+    color: mapGet($basefont, color, light);
+    font-family: mapGet($basefont, family, strong);
+    margin-bottom: 12px;
+  }
+
+  // Accordian
+  .list {
+    .item {
+      &.item-accordion {
+        line-height: 38px;
+        padding-top: 0;
+        padding-bottom: 0;
+        transition: 0.09s all linear;
+        &.ng-hide {
+          line-height: 0px;
+        }
+        &.ng-hide-add,
+        &.ng-hide-remove {
+          display: block !important;
+        }
+      }
+    }
+  }
+
+  // Form colors
+  form {
+    .editable {
+      border-left: 5px solid $grey-light;
+    }
+    .invalid {
+      border-left: 5px solid $redish;
+    }
+    .untouched {
+      border-left: 5px solid $grey-medium;
+    }
+    .valid {
+      border-left: 5px solid $aqua;
+    }
+  }
+
+  // Borders
+  .list {
+    border: solid 1px #ddd;
+    padding: 0;
+    overflow: hidden;
+    .item {
+      border: {
+        bottom: 0;
+        top: 0;
+      }
+    }
+  }
+
+  .vborder {
+    border: {
+      right: 1px;
+      style: solid;
+      color: $border-color;
+    }
+  }
+  .vborder-left {
+    border: {
+      left: 1px;
+      style: solid;
+      color: $border-color;
+    }
+  }
+  .vborders {
+    .col {
+      border: {
+        left: 1px;
+        style: solid;
+        color: $border-color;
+      }
+      &:first-child {
+        border: none;
+      }
+    }
+  }
+  .hborder {
+    margin-top: 0;
+    border: {
+      top: 1px;
+      style: solid;
+      color: $border-color;
+    }
+  }
+  .hborders {
+    & > div {
+      &:not(first-child) {
+        margin-top: 0;
+        border: {
+          top: 1px;
+          style: solid;
+          color: $border-color;
+        }
+      }
+      &:first-child {
+        border-top: 0;
+      }
+    }
+  }
+
+  // Corners
+  .list-group {
+
+    // Remove ionic styling
+    .list-inset {
+      padding: 0;
+      border-radius: 0;
+      margin: -1px 0 0;
+
+      // First row in group
+      &:first-child {
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+
+        // Form indicator corner for first item if first row
+        .item-form {
+          &:first-child {
+            .item {
+              border-top-left-radius: 5px;
+
+              // Add this if we have a header to remove corner rounding
+              &.has-group-header {
+                border-top-left-radius: 0;
+              }
+            }
+          }
+        }
+      }
+
+      // Last row in group
+      &:last-child {
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+
+        // Form indicator styling for last item if last row
+        .item-form {
+          &:last-child {
+            .item {
+              border-bottom-left-radius: 5px;
+            }
+          }
+        }
+      }
+
+      .item {
+        border-radius: 0;
+      }
+
+      // Form indicator styling for 2nd column
+      div {
+        & > .col {
+          &:nth-child(2) {
+            & > .item {
+              border-bottom-left-radius: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // Content rows
+  .row {
+    padding: 0;
+    margin: 0;
+    & > .col {
+      padding: 0;
+      margin: 0;
+    }
+
+    &.list-group {
+      margin-bottom: 30px;
+    }
+
+    // Checkbox
+    .list-checkbox {
+      margin-top: 20px;
+      & > .item-checkbox {
+        border: none;
+        background: none;
+        font: {
+          size: $font-size-standard;
+          color: $grey-dark;
+        }
+        label {
+          &.checkbox {
+            top: auto;
+            right: auto;
+            left: auto;
+            margin-top: -6px;
+            input {
+              &[type='checkbox'] {
+                width: 18px;
+                height: 18px;
+                margin-left: -32px;
+                &:before {
+                  background-color: white;
+                  border: {
+                    color: $border-color;
+                    width: 1px;
+                    radius: 1px;
+                  }
+                }
+                &:after {
+                  top: 25%;
+                  left: 15%;
+                  width: 12px;
+                  height: 6px;
+                  border: {
+                    color: $aqua;
+                    width: 2px;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Lists
+    .list-inset {
+
+      @include transition(height .3s ease);
+
+      &.list-collapse-active {
+        height: 52px;
+      }
+
+      // List rows
+      div {
+
+        // Justify content
+        &.row {
+          justify-content: space-between;
+        }
+
+        // List headers
+        &.list-notice {
+          background-color: $grey-light;
+          padding: 15px 21px;
+          height: 50px;
+          overflow: hidden;
+          min-height: 30px;
+          color: mapGet($basefont, color, light);
+          font: {
+            size: mapGet($basefont, size, standard);
+          }
+        }
+        &.list-group-header {
+          background: transparent;
+          border: 0;
+          padding: 15px 21px;
+          height: 50px;
+          overflow: hidden;
+          min-height: 30px;
+          & > span {
+            color: $grey;
+          }
+
+          // Icon
+          & > i {
+            float: left;
+            margin: -10px 2px -10px -14px;
+            padding: 10px;
+            &:before {
+              line-height: 14px;
+              color: $aqua;
+              vertical-align: middle;
+              font: {
+                size: 17px;
+              }
+            }
+          }
+        }
+
+        // Global to all list rows
+        span {
+          font: {
+            size: mapGet($basefont, size, standard);
+          }
+        }
+        label {
+          &.item {
+            border-right: none;
+          }
+          .input-label {
+            display: initial;
+          }
+        }
+
+        // Item styling
+        .item {
+          margin: 0 0 0 -1px;
+          .col {
+            margin: auto 0;
+          }
+          input {
+            padding: 0 44px 0 0;
+            margin: auto 0;
+            text-align: right;
+            &[disabled],
+            &[readonly] {
+              background-color: transparent;
+            }
+            &::placeholder {
+              padding-top: 1px;
+            }
+          }
+          select {
+            top: -1px;
+            right: 0;
+            padding-right: 44px;
+            height: 45px;
+            direction: rtl;
+            option {
+              text-align: left;
+            }
+          }
+          span {
+            margin: auto 0;
+          }
+          i {
+            margin: auto 30px auto auto;
+          }
+
+          // Input colors
+          input,
+          select,
+          span {
+            color: $grey-dark;
+          }
+        }
+
+      }
+    }
+
+  }
+
+}
+
+// Popup
+.popover {
+  opacity: 1;
+  border-radius: 5px;
+  overflow: hidden;
+  height: 160px;
+  margin-left: 0 !important;
+  left: 332px;
+  top: 292px;
+  .scroll-content {
+    border-radius: 0 !important;
+    padding: 20px;
+    margin: 0 !important;
+    text-align: center;
+  }
+}
+.popup {
+  border-radius: 5px !important;
+}
+.popup-reset {
+  .popup {
+    width: 333px;
+    .popup-body {
+      text-align: center;
+    }
+  }
+}
+
+// Logo
+.logo {
+  color: white;
+  padding: 5px;
+  img {
+    vertical-align: middle;
+    height: 20px;
+    margin-right: 2px;
+  }
+  span {
+    vertical-align: bottom;
+    font-size: 15px !important;
+  }
+}
+
+// Common Classes --------------------------------------------------------------
+
+.dim {
+  transition: 0.3s opacity;
+  opacity: 0.3 !important;
+
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+.hide {
+  display: none !important;
+}
+.light {
+  color: $grey-medium;
+}
+.strong {
+  font-weight: 700 !important;
+}
+.center {
+  text-align: center !important;
+}
+.left {
+  text-align: left !important;
+}
+.right {
+  text-align: right !important;
+}
+
+.button {
+  border-radius: 5px !important;
+}
+.button-link {
+  color: $aqua !important;
+}
+
+.nopad {
+  padding: 0 !important;
+}
+
+.flex-20 {
+  flex: 2;
+}
+.flex-13 {
+  flex: 1.3;
+}
+.flex-07 {
+  flex: 0.7;
+}
+.flex-04 {
+  flex: 0.4;
+}
+.flex-03 {
+  flex: 0.3;
+}
+.flex-02 {
+  flex: 0.2;
+}
+.flex-01 {
+  flex: 0.1;
 }

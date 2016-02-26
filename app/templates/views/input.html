@@ -1,0 +1,163 @@
+<ion-view>
+  <ion-header-bar align-title="center" class="bar-positive branding">
+    <button class="button button-icon icon ion-navicon" menu-toggle="left"></button>
+    <h1 class="title">{{account.name}}</h1>
+    <span class="see-output" ng-click="seeOutput()">SEE OUTPUT</span>
+  </ion-header-bar>
+
+  <ion-content>
+
+    <div class="content input-content">
+
+      <!-- Business -->
+      <div ng-repeat="business in businesses">
+
+          <div class="group-header">
+            {{business.title}}
+          </div>
+
+          <!-- Prerequisite Questions -->
+          <div class="row list-group">
+            <div class="col">
+
+              <div class="list list-inset">
+
+                <form class="hborders" novalidate ng-form-commit name="forms.{{business.name}}" ng-submit="submit()">
+
+                  <div ng-repeat="prerequisite in business.cover.prerequisites">
+                    <label class="item item-input editable"
+                           ng-class="itemValidity(business.name, prerequisite.name)">
+                      <span class="input-label">{{prerequisite.title}}</span>
+                      <input type="text" name="{{prerequisite.name}}" placeholder="enter value"
+                             ng-model="business.cover[prerequisite.name]"
+                             ng-change="updateData()"
+                             ng-required="true"
+                             ui-percentage-mask="0" />
+                    </label>
+                  </div>
+
+                </form>
+
+              </div>
+            </div>
+          </div>
+
+          <div class="row list-group" ng-if="forms[business.name].$invalid">
+            <div class="col">
+              <div class="list list-inset">
+                <div class="list-notice center">
+                  Please fill in question above to see Patient Warming products
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Product Questions -->
+          <div class="row list-group" ng-show="!forms[business.name].$invalid">
+            <div class="col">
+
+              <div class="list list-inset"
+                   ng-repeat="product in business.products track by $index"
+                   ng-class="{'list-collapse-active': !isGroupShown($index)}">
+
+                <div class="list-group-header" ng-click="toggleGroup($index)">
+                  <i ng-class="isGroupShown($index) ? 'ion-minus' : 'ion-plus'"></i>{{product.title}}
+                </div>
+
+                <form novalidate ng-form-commit name="forms.{{product.name}}" ng-submit="submit()">
+
+                  <!-- Question 1 -->
+                  <div class="hborder item-form">
+
+                    <label class="item item-input item-select has-group-header editable"
+                           ng-class="itemValidity(product.name, 'practicestage')">
+                      <span class="input-label">{{business.questions[0]}}</span>
+                      <select name="practicestage"
+                              ng-model="product.practicestage"
+                              ng-change="updateData()"
+                              ng-required="true">
+                        <option class="hide" value="">Select</option>
+                        <option ng-repeat="stage in stages"
+                                ng-selected="product.practicestage === stage"
+                                value="{{stage}}">Stage {{stage}}</option>
+                      </select>
+                    </label>
+
+                  </div>
+
+                  <!-- Question 2 -->
+                  <div class="hborder item-form">
+                    <label class="item item-input editable hborder"
+                           ng-class="itemValidity(product.name, 'sellingprice')">
+                      <span class="input-label">{{business.questions[1]}}</span>
+                      <input type="text" name="sellingprice" placeholder="enter value"
+                             ng-model="product.sellingprice"
+                             ng-change="updateData()"
+                             ng-required="true"
+                             ui-money-mask="2" />
+                    </label>
+                  </div>
+
+                  <!-- Question 3 -->
+                  <div class="hborder item-form">
+                    <label class="item item-input editable hborder"
+                           ng-class="itemValidity(product.name, 'priorsales')">
+                      <span class="input-label">{{business.questions[2]}}</span>
+                      <input type="text" name="priorsales" placeholder="enter value"
+                             ng-model="product.priorsales"
+                             ng-change="updateData()"
+                             ng-required="true"
+                             ui-money-mask="2" />
+                    </label>
+                  </div>
+
+                  <!-- Question 4 -->
+                  <div class="hborder item-form">
+                    <label class="item item-input editable hborder"
+                           ng-class="{
+                             valid: forms[product.name].$valid && product.competition
+                           }">
+                      <span class="input-label">{{business.questions[3]}}</span>
+                      <input type="text" name="competition" placeholder="enter value (optional)"
+                             ng-model="product.competition"
+                             ng-change="updateData(forms[product.name].competition)"
+                             ng-required="false"
+                             ui-money-mask="2" />
+                    </label>
+                  </div>
+
+                  <!-- Question 5 -->
+                  <div class="hborder item-form">
+                    <label class="item item-input editable hborder"
+                           ng-class="{
+                             valid: forms[product.name].$valid && product.notes
+                           }">
+                      <span class="input-label">{{business.questions[4]}}</span>
+                      <input type="text" name="notes" placeholder="notes"
+                             ng-model="product.notes"
+                             ng-change="updateData()"
+                             ng-required="false" />
+                    </label>
+                  </div>
+
+                </form>
+
+              </div>
+
+            </div>
+          </div>
+
+      </div>
+
+      <div class="row">
+        <div class="col right">
+          <button class="button button-outline button-positive"
+                  ng-click="seeOutput()">See Output</button>
+        </div>
+      </div>
+
+    </div>
+
+  </ion-content>
+
+</ion-view>

@@ -1,0 +1,45 @@
+.accounts-content {
+  .item-toggle {
+    background: transparent;
+    border: none;
+    height: 51px;
+  }
+  .delete-toggle {
+    right: 120px;
+    position: absolute;
+    line-height: 51px;
+    color: mapGet($basefont, color, positive);
+  }
+
+  .list-right-editing {
+    border-radius: 5px;
+    background-color: white;
+    .item {
+      border-top: solid 1px #ddd;
+      background-color: transparent;
+      &:first-child {
+        border-top-left-radius: 5px;
+        border-top-right-radius: 5px;
+      }
+      &:last-child {
+        border-bottom-left-radius: 5px;
+        border-bottom-right-radius: 5px;
+      }
+      .item-content {
+        background-color: transparent;
+      }
+      i {
+        float: right;
+        margin: 0 -17px 0 0;
+        &:before {
+          line-height: 14px;
+          color: mapGet($basefont, color, positive);
+          vertical-align: middle;
+          font: {
+            size: 20px;
+          }
+        }
+      }
+    }
+  }
+}

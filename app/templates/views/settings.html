@@ -1,27 +1,124 @@
 <ion-view>
-    <ion-header-bar align-title="center" class="bar-positive">
+  <ion-header-bar align-title="center" class="bar-positive branding">
     <button class="button button-icon icon ion-navicon" menu-toggle="left"></button>
-        <h1 class="title">Settings</h1>
-    </ion-header-bar>
+    <h1 class="title">Settings</h1>
+  </ion-header-bar>
 
-    <ion-content>
-        <div class="list">
+  <ion-content >
+    <div class="content settings-content">
 
-            <!-- connect toggles to controller using ng-model -->
+      <form novalidate ng-form-commit name="forms.settingsForm" ng-submit="submit()">
 
-            <ion-toggle>
-                <span class="settings-item__text">
-                    Allow Push Notifications
-                </span>
-            </ion-toggle>
-
-            <ion-toggle>
-                <span class="settings-item__text">
-                    Allow cookies
-                </span>
-            </ion-toggle>
-
+        <div class="group-header">
+          Please enter the following user settings
         </div>
-    </ion-content>
+
+        <div class="row list-group">
+          <div class="col">
+
+            <div class="list list-inset hborders">
+
+              <!-- Name -->
+              <div>
+                <label class="item item-input editable"
+                       ng-class="itemValidity('settingsForm', 'fullname')">
+                  <span class="input-label">Name</span>
+                  <input type="text" name="fullname" placeholder="enter full name"
+                         ng-model="profile.name"
+                         ng-change="updateData()"
+                         ng-required="true" />
+                </label>
+              </div>
+
+              <!-- Manager -->
+              <div ng-if="profile.privacy === 2">
+                <label class="item item-input item-select editable"
+                       ng-class="itemValidity('settingsForm', 'manager')">
+                  <span class="input-label">Manager</span>
+                  <select name="manager"
+                          ng-model="profile.manager"
+                          ng-change="updateData()"
+                          ng-required="true">
+                    <option class="hide" value="">Select</option>
+                    <option ng-repeat="manager in managers"
+                            ng-selected="profile.manager === manager.email"
+                            value="{{manager.email}}">{{manager.name}}</option>
+                  </select>
+                </label>
+              </div>
+
+              <!-- Address -->
+              <div>
+                <label class="item item-input editable"
+                       ng-class="itemValidity('settingsForm', 'address')">
+                  <span class="input-label">Address</span>
+                  <input type="text" name="address" placeholder="enter address"
+                         ng-model="profile.address.street"
+                         ng-change="updateData()"
+                         ng-required="true" />
+                </label>
+              </div>
+
+              <!-- City -->
+              <div>
+                <label class="item item-input editable"
+                       ng-class="itemValidity('settingsForm', 'city')">
+                  <span class="input-label">City</span>
+                  <input type="text" name="city" placeholder="enter city"
+                         ng-model="profile.address.city"
+                         ng-change="updateData()"
+                         ng-required="true" />
+                </label>
+              </div>
+
+              <!-- State -->
+              <div>
+                <label class="item item-input item-select editable"
+                       ng-class="itemValidity('settingsForm', 'states')">
+                  <span class="input-label">State</span>
+                  <select name="states"
+                          ng-model="profile.address.state"
+                          ng-change="updateData()"
+                          ng-required="true">
+                    <option class="hide" value="">Select</option>
+                    <option ng-repeat="state in states"
+                            ng-selected="profile.address.state === state.abbreviation"
+                            value="{{state.abbreviation}}">{{state.abbreviation}}</option>
+                  </select>
+                </label>
+              </div>
+
+              <!-- Zip -->
+              <div>
+                <label class="item item-input editable"
+                       ng-class="itemValidity('settingsForm', 'zip')">
+                  <span class="input-label">Zip</span>
+                  <input type="text" name="zip" placeholder="enter zip"
+                         ng-model="profile.address.zip"
+                         ng-change="updateData()"
+                         ng-required="true" />
+                </label>
+              </div>
+
+              <!-- Phone -->
+              <div>
+                <label class="item item-input editable"
+                       ng-class="itemValidity('settingsForm', 'phone')">
+                  <span class="input-label">Phone Number</span>
+                  <input type="text" name="phone" placeholder="enter phone number"
+                         ng-model="profile.address.phone"
+                         ng-change="updateData()"
+                         ng-required="true"
+                         ui-us-phone-number />
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+  </ion-content>
 
 </ion-view>

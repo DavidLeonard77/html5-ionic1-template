@@ -241,6 +241,7 @@ module.exports = [
       return {
         fetchData: fetchData,
         getQuery: getQuery,
+        processSearch: processSearch,
         searchData: searchData
       };
     }

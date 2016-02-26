@@ -1,0 +1,43 @@
+<ion-view>
+  <ion-header-bar align-title="center" class="bar-positive header branding">
+    <button class="button button-icon icon ion-navicon" menu-toggle="left"></button>
+    <h1 class="title">Accounts</h1>
+  </ion-header-bar>
+
+  <ion-content>
+
+    <div class="content accounts-content">
+
+      <div ng-if="user.accounts.length">
+
+        <span class="delete-toggle" ng-click="shouldShowDelete = !shouldShowDelete">EDIT</span>
+        <ion-toggle ng-model="shouldShowDelete"></ion-toggle>
+
+          <!-- Accounts -->
+          <div class="row">
+            <div class="col">
+
+              <ion-list show-delete="shouldShowDelete" show-reorder="true">
+                <div>
+                <ion-item ng-repeat="account in user.accounts track by $index" ng-click="openAccount($index)">
+                  <ion-delete-button class="ion-minus-circled"
+                                     ng-click="deleteItem($index)"></ion-delete-button>
+                  <span>{{account.name}}</span>
+
+                  <ion-reorder-button class="ion-navicon"
+                                      ng-show="shouldShowDelete"
+                                      on-reorder="moveItem($fromIndex, $toIndex)"></ion-reorder-button>
+                  <i class="ion-chevron-right" ng-hide="shouldShowDelete"></i>
+
+                </ion-item>
+                </div>
+              </ion-list>
+
+            </div>
+          </div>
+      </div>
+    </div>
+
+  </ion-content>
+
+</ion-view>

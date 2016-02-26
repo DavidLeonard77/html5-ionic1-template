@@ -1,11 +1,12 @@
-.header {
-
-}
-
-.content {
-  padding: 1rem;
-}
-
-.selected {
-  color: $primaryColor;
+.home-content {
+  form {
+    button {
+      width: 90%;
+      min-height: 40px;
+      background: white !important;
+      font: {
+        size: mapGet($basefont, size, standard);
+      }
+    }
+  }
 }

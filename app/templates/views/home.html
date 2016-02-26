@@ -1,104 +1,157 @@
 <ion-view>
-    <ion-header-bar align-title="center" class="bar-positive">
+  <ion-header-bar align-title="center" class="bar-positive branding">
     <button class="button button-icon icon ion-navicon" menu-toggle="left"></button>
-        <h1 class="title">html5-ionic-template</h1>
-    </ion-header-bar>
+    <h1 class="title"></h1>
+  </ion-header-bar>
 
-    <ion-content>
-        <ion-refresher
-            pulling-text="Pull to refresh..."
-            on-refresh="fetchData()">
-        </ion-refresher>
-        <div class="loader" ng-if="!myHTML">
-            <ion-spinner></ion-spinner>
+  <ion-content>
+
+    <div class="content home-content">
+
+      <form novalidate ng-form-commit name="forms.accountForm" ng-submit="submit()">
+
+        <div class="group-header">
+          ADD ACCOUNT
         </div>
 
-        <div class="row">
-
+        <div class="row list-group">
           <div class="col">
-            <ion-list>
-              <ion-item class="item-input">
-                <i class="icon ion-search placeholder-icon"></i>
-                <input id="searchInput"
-                       name="searchInput"
-                       type="text"
-                       placeholder="Search"
-                       ng-model="searchInput.value"
-                       ng-change="search()"
-                       autocapitalize="off"
-                       autocorrect="off">
-              </ion-item>
-            </ion-list>
-          </div>
 
+            <div class="list list-inset hborders">
+
+              <!-- Rep Name -->
+              <div>
+                <label class="item item-input editable has-group-header"
+                       ng-class="itemValidity('accountForm', 'repname')">
+                  <span class="input-label">Rep Name</span>
+                  <input type="text" name="repname" placeholder="enter full name"
+                         ng-model="account.rep"
+                         ng-change="updateData()"
+                         ng-required="true" />
+                </label>
+              </div>
+
+              <!-- Country -->
+              <div>
+                <label class="item item-input editable"
+                       ng-class="itemValidity('accountForm', 'country')">
+                  <span class="input-label">Country</span>
+                  <input type="text" name="country" placeholder="enter country"
+                         ng-model="account.country"
+                         ng-change="updateData()"
+                         ng-required="true" />
+                </label>
+              </div>
+
+              <!-- Date -->
+              <div>
+                <label class="item item-input editable"
+                       ng-class="itemValidity('accountForm', 'date')">
+                  <span class="input-label">Last Update Date</span>
+                  <input type="text" name="date" placeholder="dd/mm/yy"
+                         ng-model="account.date"
+                         ng-change="updateData()"
+                         ng-required="true" />
+                </label>
+              </div>
+
+              <!-- Account Number -->
+              <div>
+                <label class="item item-input editable"
+                       ng-class="itemValidity('accountForm', 'id')">
+                  <span class="input-label">Sold to Account Number</span>
+                  <input type="text" name="id" placeholder="enter number"
+                         ng-model="account.id"
+                         ng-change="updateData()"
+                         ng-required="true" />
+                </label>
+              </div>
+
+              <!-- Account Name -->
+              <div>
+                <label class="item item-input editable"
+                       ng-class="itemValidity('accountForm', 'accountname')">
+                  <span class="input-label">Account Name</span>
+                  <input type="text" name="accountname" placeholder="enter name"
+                         ng-model="account.name"
+                         ng-change="updateData()"
+                         ng-required="true" />
+                </label>
+              </div>
+
+            </div>
+          </div>
         </div>
 
-        <div class="content" ng-bind-html="myHTML">
+        <div class="row list-group">
+          <div class="col">
+            <div class="list list-inset hborders">
+
+              <!-- Number of Surgeries -->
+              <div>
+                <label class="item item-input editable"
+                       ng-class="itemValidity('accountForm', 'surgeries')">
+                  <span class="input-label">Number of Surgeries</span>
+                  <input type="text" name="surgeries" placeholder="enter value"
+                         ng-model="account.surgeries"
+                         ng-change="updateData()"
+                         ng-required="true" />
+                </label>
+              </div>
+
+              <!-- Number of Hospitals -->
+              <div>
+                <label class="item item-input editable"
+                       ng-class="itemValidity('accountForm', 'hospitals')">
+                  <span class="input-label">Number of Hospitals</span>
+                  <input type="text" name="hospitals" placeholder="enter value"
+                         ng-model="account.hospitals"
+                         ng-change="updateData()"
+                         ng-required="true" />
+                </label>
+              </div>
+
+              <!-- Business selection -->
+              <div>
+                <label class="item item-input item-select editable"
+                       ng-class="itemValidity('accountForm', 'businesses')">
+                  <span class="input-label">Which businesses do you want to calculate opportunity for?</span>
+                  <select name="businesses"
+                          ng-model="account.opportunity"
+                          ng-change="updateData()"
+                          ng-required="true">
+                    <option class="hide" value="">Select</option>
+                    <option ng-selected="account.opportunity === 'patientwarming'"
+                            value="patientwarming">Patient Warming</option>
+
+                    <option ng-selected="account.opportunity === 'perioperative'"
+                            value="perioperative">Perioperative</option>
+
+                    <option ng-selected="account.opportunity === 'sterilization'"
+                            value="sterilization">Sterilization</option>
+                  </select>
+                </label>
+              </div>
+
+            </div>
+          </div>
         </div>
 
         <div class="row">
-
-          <div class="col" style="width: 20%">
-            <ion-list>
-              <ion-item class="item-input item-select">
-                <div class="input-label">Unit</div>
-                <select ng-model="searchFilters.unit"
-                        ng-change="search()">
-                  <option value="" ng-checked="true">ALL</option>
-                  <option ng--value="EACH">EACH</option>
-                  <option ng-value="PACK">PACK</option>
-                  <option ng-value="SETS">SETS</option>
-                  <option ng-value="KIT">KIT</option>
-                  <option ng-value="PADS">PADS</option>
-                  <option ng-value="SETS">SETS</option>
-                  <option ng-value="BAG">BAG</option>
-                </select>
-              </ion-item>
-
-              <ion-item class="item-input item-select">
-                <div class="input-label">GPM</div>
-                <select ng-model="searchFilters.gpm"
-                        ng-change="search(searchInput.value)">
-                  <option value="" ng-checked="true">ANY</option>
-                  <option ng-value="40">40%</option>
-                  <option ng-value="45">45%</option>
-                </select>
-              </ion-item>
-
-              <ion-checkbox type="checkbox"
-                            ng-model="searchCategories.description"
-                            ng-checked="true"
-                            ng-change="search(searchInput.value)" />
-                            Description</ion-checkbox>
-              <ion-checkbox type="checkbox"
-                            ng-model="searchCategories.upc"
-                            ng-change="search(searchInput.value)" />
-                            UPC #</ion-checkbox>
-              <ion-checkbox type="checkbox"
-                            ng-model="searchCategories.listprice"
-                            ng-click="search(searchInput.value)" />
-                            List Price</ion-checkbox>
-            </ion-list>
+          <div class="col">
+            <button class="button button-outline button-positive"
+                    ng-click="clearForm()">Clear Form</button>
           </div>
-
-          <div class="col" style="width: 80%">
-              <ion-list>
-                  <div ng-repeat="searchResult in searchResults">
-                    <ion-item>
-
-                    <span ng-class="{'selected' : searchCategories.upc}">{{ searchResult.upc }}</span>
-                    <span ng-class="{'selected' : searchFilters.unit}"><strong>{{ searchResult.unit }}</strong></span>
-                    <span ng-class="{'selected' : searchCategories.description}">{{ searchResult.description }}</span>
-                    <span ng-class="{'selected' : searchCategories.listprice}"><strong>{{ searchResult.listprice | currency : $ : '2' }}</strong></span>
-                    <span ng-class="{'selected' : searchFilters.gpm}">{{ searchResult.gpm }}% GPM</span>
-
-                    </ion-item>
-                  </div>
-            </ion-list>
+          <div class="col right">
+            <button class="button button-outline button-positive"
+                    ng-disabled="forms.accountForm.$invalid"
+                    ng-click="saveAccount()">Save</button>
           </div>
-
         </div>
+      </form>
 
-    </ion-content>
+    </div>
+
+  </ion-content>
 
 </ion-view>

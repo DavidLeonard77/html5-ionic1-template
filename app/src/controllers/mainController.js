@@ -8,9 +8,15 @@
  */
 module.exports = [
     '$scope',
-
-    function( $scope )
-    {
-        // do something with $scope
+    'UserService',
+    function(
+      $scope,
+      UserService
+    ) {
+      UserService.init().then(function(){
+        $scope.$broadcast('usersFetched');
+      },function(e){
+        console.log(e);
+      });
     }
 ];
